@@ -6,7 +6,11 @@ public class ResetLevel : MonoBehaviour {
 	public static ResetLevel instance;
 
 	void Awake(){
-		instance = this;
+		if (instance == null) {
+			instance = this;
+		} else if (instance != this) {
+			Destroy (gameObject);
+		}
 	}
 
 	// Use this for initialization

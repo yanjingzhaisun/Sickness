@@ -15,6 +15,7 @@ public class PlayerControl : MonoBehaviour {
 
 	//bool that decided whether it isjumping or not.
 	bool isJumping;
+	bool startJumping;
 
 	//rigidBody to be applied the forces
 	Rigidbody2D rigidBody;
@@ -32,7 +33,7 @@ public class PlayerControl : MonoBehaviour {
 	public float dragForce = 0.1f;
 
 	//jumpling gravity scale used when using reverse jumping gravity
-	public float jumpingGravityScale = 1f;
+	public float jumpingMaxSpeedRatio = 1.7f;
 
 	//jumping lifting time counter, using an integer as counters instead of using time period to control.
 	public int jumpingLiftingTimeCounter = 12;
@@ -71,12 +72,19 @@ public class PlayerControl : MonoBehaviour {
 
 		//get animator
 		walkingAnimator = GetComponent<Animator> ();
+
+		//setTransformPosition
+
+		if (PlayerPositionManager.instance != null) {
+			transform.position = PlayerPositionManager.instance.PlayerPosition;
+		}
 	}
 
 	void Update(){
 		//setting all the animators;
 		walkingAnimator.SetFloat ("xSpeed", Mathf.Abs (rigidBody.velocity.x));
 		walkingAnimator.SetBool ("isJumping", isJumping);
+		JumpInput ();
 
 	}
 
@@ -94,6 +102,18 @@ public class PlayerControl : MonoBehaviour {
 		}
 	}
 
+	void JumpInput(){
+		//startJumping
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			//Debug.Log ("JumpTime = " + Time.time + "; isJumping = " + isJumping);
+			if ((CollisionDirection ("Terrain") & 2) == 0) {
+				Debug.Log (CollisionDirection ("Terrain"));
+				return;
+			}
+			StartJumping ();
+		}
+	}
+
 	public void StartJumping(){
 		if (!isJumping) {
 			//initializing of parameters
@@ -102,13 +122,15 @@ public class PlayerControl : MonoBehaviour {
 			isJumping = true;
 
 			//reverse the gravity
-			rigidBody.gravityScale = -Mathf.Abs (jumpingGravityScale);
+			//rigidBody.gravityScale = -Mathf.Abs (jumpingGravityScale);
+			rigidBody.gravityScale = 0;
 
 			//apply the initial upwards velocity;
-			rigidBody.velocity += new Vector2 (0, 10f);
+			rigidBody.velocity += new Vector2 (0, 1.4f * maxSpeed);
 
 			//initialize the counter;
 			jumpCounter = 0;
+			startJumping = true;
 		}
 	}
 
@@ -120,13 +142,13 @@ public class PlayerControl : MonoBehaviour {
 		}
 		// if:
 		// 		you are holding jumping space and it doesn't exceed the maximum time counter forjumping, or the jumping time is still smaller than minimal jumping counters
-		if ((Input.GetKey (KeyCode.Space) || (jumpCounter < jumpingLiftingTimeCounter / ratioJumpingFactor)) && (jumpCounter <= jumpingLiftingTimeCounter)) {
+		if ((Input.GetKey (KeyCode.Space) || (jumpCounter < jumpingLiftingTimeCounter / ratioJumpingFactor)) && (jumpCounter <= jumpingLiftingTimeCounter) && (startJumping)) {
 			//add upwards force
 			rigidBody.AddForce (new Vector2 (0, jumpingForce ), ForceMode2D.Force);
 
 			//clamp max velocity
 			Vector2 v = rigidBody.velocity;
-			v.y = Mathf.Clamp (v.y, -1.7f * maxSpeed, 1.7f * maxSpeed);
+			v.y = Mathf.Clamp (v.y, -jumpingMaxSpeedRatio * maxSpeed, jumpingMaxSpeedRatio * maxSpeed);
 			rigidBody.velocity = v;
 
 			//add jumpCounter
@@ -136,6 +158,7 @@ public class PlayerControl : MonoBehaviour {
 			//means that it exceed the maximum lifting time, or doesn't press jump button anymore
 			//apply back gravity;
 			rigidBody.gravityScale = Mathf.Abs (gravityScale);
+			startJumping = false;
 		}
 	}
 
@@ -155,10 +178,7 @@ public class PlayerControl : MonoBehaviour {
 		v.x = Mathf.Clamp (v.x, -maxSpeed, maxSpeed);
 		rigidBody.velocity = v;
 
-		//startJumping
-		if (Input.GetKeyDown (KeyCode.Space)) {
-			StartJumping ();
-		}
+
 	}
 
 
@@ -181,6 +201,14 @@ public class PlayerControl : MonoBehaviour {
 			}
 		}
 	}
+//
+//	public void OnCollisionExit2D(Collision2D myCollision) {
+//		if (myCollision.collider.CompareTag ("Terrain")) {
+//			if ((CollisionDirection ("Terrain") & 2) == 0) {
+//				isJumping = true;
+//			}
+//		}
+//	}
 
 
 	int CollisionDirection(string tag){
@@ -252,7 +280,7 @@ public class PlayerControl : MonoBehaviour {
 				result = result | 8;
 			}
 		}
-		Debug.Log (result);
+		//Debug.Log (result);
 		return result;
 	}
 

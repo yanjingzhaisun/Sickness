@@ -45,18 +45,33 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\FrameControl.cs" />
+     <Compile Include="Assets\ItemGetable.cs" />
+     <Compile Include="Assets\OnLoadChangePlayerPosition.cs" />
+     <Compile Include="Assets\PlayerPositionManager.cs" />
+     <Compile Include="Assets\SaveLoadFunction.cs" />
+     <Compile Include="Assets\SceneChangeInitialize.cs" />
      <Compile Include="Assets\Scripts\CameraMoveMent.cs" />
      <Compile Include="Assets\Scripts\ChpterStartRoutine.cs" />
      <Compile Include="Assets\Scripts\FadeScreen.cs" />
      <Compile Include="Assets\Scripts\GoalItem.cs" />
+     <Compile Include="Assets\Scripts\ItemDatabase.cs" />
+     <Compile Include="Assets\Scripts\ItemSlot.cs" />
+     <Compile Include="Assets\Scripts\MyTriggerClass.cs" />
      <Compile Include="Assets\Scripts\NextLevel.cs" />
+     <Compile Include="Assets\Scripts\PauseMenu.cs" />
+     <Compile Include="Assets\Scripts\PlayerBagManager.cs" />
      <Compile Include="Assets\Scripts\PlayerControl.cs" />
      <Compile Include="Assets\Scripts\ResetLevel.cs" />
+     <Compile Include="Assets\VisualEffect_Flopping.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="LitJson">
+ <HintPath>/Users/zijianzhou/Documents/UnityProjects/Sickness/Assets/Plugins/LitJson.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

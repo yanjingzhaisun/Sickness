@@ -1,0 +1,12 @@
+[
+    {
+        "id": 0,
+        "title": "Steel Gloves",
+        "image": "basicEnemy"
+    },
+    {
+        "id": 1,
+        "title": "The great stick",
+        "image": "basicTerrain01"
+    }
+]
