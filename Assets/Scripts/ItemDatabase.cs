@@ -3,6 +3,7 @@ using System.Collections;
 using LitJson;
 using System.Collections.Generic;
 using System.IO;
+using System;
 
 public class ItemDatabase : MonoBehaviour {
 	[HideInInspector]
@@ -41,6 +42,7 @@ public class ItemDatabase : MonoBehaviour {
 	}
 }
 
+[Serializable]
 public class Item{
 
 	public int ID {get; set;}

@@ -12,10 +12,10 @@ public class ItemSaveManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Vector3.SqrMagnitude (player.position - transform.position) > 20f) {
+		if (Vector3.SqrMagnitude (player.position - transform.position) > 30f) {
 			txt.color = new Color (txt.color.r, txt.color.g, txt.color.b, 0f);
 		} else {
-			float alpha = 1 - Vector3.SqrMagnitude (player.position - transform.position) / 20f;
+			float alpha = 1 - Vector3.SqrMagnitude (player.position - transform.position) / 30f;
 			txt.color = new Color (txt.color.r, txt.color.g, txt.color.b, alpha);
 		}
 

@@ -39,8 +39,10 @@ public class SaveLoadFunction : MonoBehaviour {
 
 		PlayerData playerdata = new PlayerData ();
 		playerdata.bagContent = PlayerBagManager.instance.BagContent;
-		playerdata.playerPosition = GameObject.Find ("prefabBasicPlayer").transform.position;
+		playerdata.playerPositionX = GameObject.Find ("prefabBasicPlayer").transform.position.x;
+		playerdata.playerPositionY = GameObject.Find ("prefabBasicPlayer").transform.position.y;
 		playerdata.currentScene = SceneManager.GetActiveScene ().buildIndex;
+		Debug.Log (SceneManager.GetActiveScene ().buildIndex);
 
 		bf.Serialize (file, playerdata);
 		file.Close ();
@@ -48,15 +50,24 @@ public class SaveLoadFunction : MonoBehaviour {
 
 	public void Load(){
 		if (File.Exists (Application.dataPath + "/SaveData/playerInfo.dat")) {
+			Debug.Log ("into the Save Data!");
 			BinaryFormatter bf = new BinaryFormatter ();
+			Debug.Log ("finish bf define bf!");
 			FileStream file = File.Open (Application.dataPath + "/SaveData/playerInfo.dat",FileMode.Open);
+			Debug.Log ("finish open");
 			PlayerData data = (PlayerData)bf.Deserialize (file);
+			Debug.Log ("finish data deserialize!");
 			file.Close();
 
 
-			PlayerPositionManager.instance.SceneNumber = data.currentScene;
-			PlayerPositionManager.instance.PlayerPosition = data.playerPosition;
+			PlayerPrefs.SetFloat ("PlayerX", data.playerPositionX);
+			Debug.Log ("finish load playerpositionX");
+			PlayerPrefs.SetFloat ("PlayerY", data.playerPositionY);
+			Debug.Log ("finish load playerpositionY");
+			PlayerPrefs.SetFloat ("PlayerZ", 0);
+			Debug.Log ("finish load playerpositionZ");
 			PlayerBagManager.instance.BagContent = data.bagContent;
+			Debug.Log ("finish load bagContent");
 			SceneManager.LoadScene (data.currentScene);
 		}
 	}
@@ -66,7 +77,8 @@ public class SaveLoadFunction : MonoBehaviour {
 	[Serializable]
 	class PlayerData{
 		public List<Item> bagContent { get; set;}
-		public Vector3 playerPosition;
+		public float playerPositionX;
+		public float playerPositionY;
 		public int currentScene;
 	}
 

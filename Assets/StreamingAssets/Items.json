@@ -8,5 +8,10 @@
         "id": 1,
         "title": "The great stick",
         "image": "basicTerrain01"
+    },
+    {
+        "id": 2,
+        "title": "Invert Skill",
+        "image": "basicSkillInvert"
     }
 ]

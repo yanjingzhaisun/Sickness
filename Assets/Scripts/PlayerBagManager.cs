@@ -11,8 +11,18 @@ public class PlayerBagManager : MonoBehaviour {
 	public List<Item> BagContent {
 		get{ return bagContent;}
 		set { 
-			for (int i = 0; i < value.Count; i++) {
-				bagContent [i] = value [i];
+			if (bagContent.Count <= value.Count) {
+				for (int i = 0; i < bagContent.Count; i++) {
+					bagContent [i] = value [i];
+				}
+				for (int i = bagContent.Count; i < value.Count; i++) {
+					bagContent.Add (value [i]);
+				}
+			} else {
+				for (int i = 0; i < value.Count; i++) {
+					bagContent [i] = value [i];
+				}
+				bagContent.RemoveRange (value.Count, bagContent.Count - value.Count);
 			}
 		}
 	}
