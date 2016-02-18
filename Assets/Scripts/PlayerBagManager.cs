@@ -18,41 +18,36 @@ public class PlayerBagManager : MonoBehaviour {
 	}
 	List<Item> bagContent;
 
-	// Use this for initialization
-
-
 
 	void Awake(){
 		
 		if (instance == null) {
-			List<Item> bagContent = new List<Item> ();
+			transform.parent = null;
+			bagContent = new List<Item> ();
 			DontDestroyOnLoad (gameObject);
 			instance = this;
+
 		} else if (instance != this) {
+			
+//			Debug.Log ("instance's bagContent is " + instance.bagContent);
+//			Debug.Log ("this object's bagContent is " + this.bagContent);
+//			Debug.Log ("destory new instance");
+			//Debug.Log (instance.bagContent);
 			Destroy (gameObject);
 		}
 
-
-	}
-
-	void OnLevelWasLoaded(){
-		
-	}
-
-	void Start () {
-		DontDestroyOnLoad (gameObject);
-		//AddNewItemIntoBag (0);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 
 	public void AddNewItemIntoBag(int itemID){
 
 		//Debug.Log ("Entered AddNewItemIntoBag, itemID = " + itemID);
+		if (instance == this) {
+			if (instance.bagContent == null) {
+				
+				return;
+			}
 
+		}
 		for (int i = 0; i < bagContent.Count; i++) {
 			if (bagContent [i].ID == itemID)
 				return;
@@ -66,6 +61,11 @@ public class PlayerBagManager : MonoBehaviour {
 	}
 
 	public Item GetThingInBag(int bagPosition){
+		if (bagContent == null) {
+//			bagContent = new List<Item> ();
+			return null;
+		}
+
 		if (bagPosition < bagContent.Count)
 			return bagContent [bagPosition];
 		return null;

@@ -45,25 +45,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\FrameControl.cs" />
-     <Compile Include="Assets\ItemGetable.cs" />
-     <Compile Include="Assets\OnLoadChangePlayerPosition.cs" />
-     <Compile Include="Assets\PlayerPositionManager.cs" />
-     <Compile Include="Assets\SaveLoadFunction.cs" />
-     <Compile Include="Assets\SceneChangeInitialize.cs" />
+     <Compile Include="Assets\ItemSaveManager.cs" />
      <Compile Include="Assets\Scripts\CameraMoveMent.cs" />
      <Compile Include="Assets\Scripts\ChpterStartRoutine.cs" />
      <Compile Include="Assets\Scripts\FadeScreen.cs" />
+     <Compile Include="Assets\Scripts\FrameControl.cs" />
      <Compile Include="Assets\Scripts\GoalItem.cs" />
      <Compile Include="Assets\Scripts\ItemDatabase.cs" />
+     <Compile Include="Assets\Scripts\ItemGetable.cs" />
      <Compile Include="Assets\Scripts\ItemSlot.cs" />
      <Compile Include="Assets\Scripts\MyTriggerClass.cs" />
      <Compile Include="Assets\Scripts\NextLevel.cs" />
+     <Compile Include="Assets\Scripts\OnLoadChangePlayerPosition.cs" />
      <Compile Include="Assets\Scripts\PauseMenu.cs" />
      <Compile Include="Assets\Scripts\PlayerBagManager.cs" />
      <Compile Include="Assets\Scripts\PlayerControl.cs" />
+     <Compile Include="Assets\Scripts\PlayerPositionManager.cs" />
      <Compile Include="Assets\Scripts\ResetLevel.cs" />
-     <Compile Include="Assets\VisualEffect_Flopping.cs" />
+     <Compile Include="Assets\Scripts\SaveLoadFunction.cs" />
+     <Compile Include="Assets\Scripts\SceneChangeInitialize.cs" />
+     <Compile Include="Assets\Scripts\VisualEffect_Flopping.cs" />
+     <Compile Include="Assets\StartGame.cs" />
+     <Compile Include="Assets\TextTransformCorrection.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
