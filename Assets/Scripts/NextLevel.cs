@@ -10,7 +10,11 @@ public class NextLevel : MonoBehaviour {
 	// Use this for initialization
 
 	void Awake(){
-		instance = this;
+		if (instance == null) {
+			instance = this;
+		} else if (instance != this) {
+			Destroy (gameObject);
+		}
 	}
 
 	void Start () {
