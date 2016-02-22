@@ -45,11 +45,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\GameLoadFunction.cs" />
+     <Compile Include="Assets\Scripts\CameraLimitFrame.cs" />
      <Compile Include="Assets\Scripts\CameraMoveMent.cs" />
      <Compile Include="Assets\Scripts\ChpterStartRoutine.cs" />
+     <Compile Include="Assets\Scripts\DeathManager.cs" />
      <Compile Include="Assets\Scripts\FadeScreen.cs" />
+     <Compile Include="Assets\Scripts\FinalItem.cs" />
      <Compile Include="Assets\Scripts\FrameControl.cs" />
      <Compile Include="Assets\Scripts\GoalItem.cs" />
+     <Compile Include="Assets\Scripts\IfHaveCertainItem.cs" />
+     <Compile Include="Assets\Scripts\InitializePositionAllGame.cs" />
      <Compile Include="Assets\Scripts\ItemDatabase.cs" />
      <Compile Include="Assets\Scripts\ItemGetable.cs" />
      <Compile Include="Assets\Scripts\ItemSaveManager.cs" />
@@ -65,6 +71,8 @@
      <Compile Include="Assets\Scripts\SaveLoadFunction.cs" />
      <Compile Include="Assets\Scripts\SceneChangeInitialize.cs" />
      <Compile Include="Assets\Scripts\SkillInvert.cs" />
+     <Compile Include="Assets\Scripts\SkillReverseGravity.cs" />
+     <Compile Include="Assets\Scripts\SpikeControl.cs" />
      <Compile Include="Assets\Scripts\StartGame.cs" />
      <Compile Include="Assets\Scripts\TextTransformCorrection.cs" />
      <Compile Include="Assets\Scripts\VisualEffect_Flopping.cs" />

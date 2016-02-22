@@ -15,7 +15,7 @@ public class SceneChangeInitialize : MonoBehaviour {
 	
 	}
 
-	void OnTriggerEnter2D(Collider2D c) {
+	void OnColliderEnter2D(Collider2D c) {
 		if (c.gameObject.CompareTag ("Player")) {
 			PlayerPrefs.SetFloat ("PlayerX", newScenePosition.x);
 			PlayerPrefs.SetFloat ("PlayerY", newScenePosition.y);

@@ -17,6 +17,12 @@ public class PlayerControl : MonoBehaviour {
 	bool isJumping;
 	bool startJumping;
 
+
+	public int VectorInvert {
+		get;
+		set;
+	}
+
 	//rigidBody to be applied the forces
 	Rigidbody2D rigidBody;
 
@@ -52,6 +58,11 @@ public class PlayerControl : MonoBehaviour {
 	bool isInputEnabled = true;
 	//InputDevice inputDevice;
 
+	public bool IsInputEnabled{
+		get { return isInputEnabled;}
+		set { isInputEnabled = value;}
+	}
+
 	//jumpCounter used for calculate fixed updated jumping.
 	int jumpCounter;
 
@@ -67,6 +78,7 @@ public class PlayerControl : MonoBehaviour {
 		//set rigidBody
 		rigidBody = GetComponent<Rigidbody2D> ();
 
+		VectorInvert = 1;
 		//setting gravity
 		rigidBody.gravityScale = gravityScale;
 
@@ -84,7 +96,9 @@ public class PlayerControl : MonoBehaviour {
 		//setting all the animators;
 		walkingAnimator.SetFloat ("xSpeed", Mathf.Abs (rigidBody.velocity.x));
 		walkingAnimator.SetBool ("isJumping", isJumping);
-		JumpInput ();
+		if (isInputEnabled) {
+			JumpInput ();
+		}
 
 	}
 
@@ -106,8 +120,12 @@ public class PlayerControl : MonoBehaviour {
 		//startJumping
 		if (Input.GetKeyDown (KeyCode.Space)) {
 			//Debug.Log ("JumpTime = " + Time.time + "; isJumping = " + isJumping);
-			if ((CollisionDirection ("Terrain") & 2) == 0) {
-				Debug.Log (CollisionDirection ("Terrain"));
+			if (((CollisionDirection ("Terrain") & 2) == 0) && (VectorInvert == 1)) {
+				//Debug.Log (CollisionDirection ("Terrain"));
+				return;
+			}
+			if (((CollisionDirection ("Terrain") & 1) == 0) && (VectorInvert == -1)) {
+				//Debug.Log (CollisionDirection ("Terrain"));
 				return;
 			}
 			StartJumping ();
@@ -123,10 +141,10 @@ public class PlayerControl : MonoBehaviour {
 
 			//reverse the gravity
 			//rigidBody.gravityScale = -Mathf.Abs (jumpingGravityScale);
-			rigidBody.gravityScale = 0;
+			rigidBody.gravityScale = 0 * VectorInvert;
 
 			//apply the initial upwards velocity;
-			rigidBody.velocity += new Vector2 (0, 1.4f * maxSpeed);
+			rigidBody.velocity += new Vector2 (0, 1.4f * maxSpeed * VectorInvert);
 
 			//initialize the counter;
 			jumpCounter = 0;
@@ -137,18 +155,18 @@ public class PlayerControl : MonoBehaviour {
 	void JumpUpdate(){
 		if (!isJumping) {
 			//If we touch the terrain collider before the jump action finishes, the gravityScale should be set back to normal
-			rigidBody.gravityScale = Mathf.Abs (gravityScale);
+			rigidBody.gravityScale = Mathf.Abs (gravityScale) * VectorInvert;
 			return;
 		}
 		// if:
 		// 		you are holding jumping space and it doesn't exceed the maximum time counter forjumping, or the jumping time is still smaller than minimal jumping counters
 		if ((Input.GetKey (KeyCode.Space) || (jumpCounter < jumpingLiftingTimeCounter / ratioJumpingFactor)) && (jumpCounter <= jumpingLiftingTimeCounter) && (startJumping)) {
 			//add upwards force
-			rigidBody.AddForce (new Vector2 (0, jumpingForce ), ForceMode2D.Force);
+			rigidBody.AddForce (new Vector2 (0, jumpingForce*VectorInvert ), ForceMode2D.Force);
 
 			//clamp max velocity
 			Vector2 v = rigidBody.velocity;
-			v.y = Mathf.Clamp (v.y, -jumpingMaxSpeedRatio * maxSpeed, jumpingMaxSpeedRatio * maxSpeed);
+			v.y = Mathf.Clamp (v.y, -jumpingMaxSpeedRatio * maxSpeed , jumpingMaxSpeedRatio * maxSpeed);
 			rigidBody.velocity = v;
 
 			//add jumpCounter
@@ -157,7 +175,7 @@ public class PlayerControl : MonoBehaviour {
 		} else {
 			//means that it exceed the maximum lifting time, or doesn't press jump button anymore
 			//apply back gravity;
-			rigidBody.gravityScale = Mathf.Abs (gravityScale);
+			rigidBody.gravityScale = Mathf.Abs (gravityScale) *VectorInvert;
 			startJumping = false;
 		}
 	}
@@ -166,16 +184,16 @@ public class PlayerControl : MonoBehaviour {
 		//Input of moving left/right
 		if (Input.GetKey (KeyCode.A)) {
 			Vector2 f = new Vector2 (-maxForce, 0);
-			rigidBody.AddForce (f,ForceMode2D.Impulse);
+			rigidBody.AddForce (f ,ForceMode2D.Impulse);
 
 		} else if (Input.GetKey (KeyCode.D)) {
 			Vector2 f = new Vector2 (maxForce, 0);
-			rigidBody.AddForce (f,ForceMode2D.Impulse);
+			rigidBody.AddForce (f ,ForceMode2D.Impulse);
 		}
 
 		//clamping xSpeed
 		Vector2 v = rigidBody.velocity;
-		v.x = Mathf.Clamp (v.x, -maxSpeed, maxSpeed);
+		v.x = Mathf.Clamp (v.x , -maxSpeed, maxSpeed);
 		rigidBody.velocity = v;
 
 
@@ -196,9 +214,13 @@ public class PlayerControl : MonoBehaviour {
 	// Decide which direction that the player has touched.
 	public void OnCollisionEnter2D(Collision2D myCollision){
 		if (myCollision.collider.CompareTag ("Terrain")) {
-			if ((CollisionDirection ("Terrain") & 2) != 0) {
+
+			if ((VectorInvert == 1) && (CollisionDirection ("Terrain") & 2) != 0) {
+				isJumping = false;
+			} else if ((VectorInvert == -1) && (CollisionDirection ("Terrain") & 1) != 0) {
 				isJumping = false;
 			}
+
 		}
 	}
 //
@@ -216,32 +238,32 @@ public class PlayerControl : MonoBehaviour {
 		//LayerMask layerMask = ~(LayerMask.NameToLayer("Terrain"));
 		int result = 0;
 
-		hit = Physics2D.Raycast (transform.position + new Vector3(spriteWidth/2, spriteHeight/2,0), Vector2.up, 0.4f,layerMask);
-		Debug.DrawRay (transform.position + new Vector3(spriteWidth/2, spriteHeight/2,0), Vector2.up * 0.4f, Color.red , 2);
+		hit = Physics2D.Raycast (transform.position + new Vector3(spriteWidth/2, spriteHeight/2,0), Vector2.up, 0.8f,layerMask);
+		Debug.DrawRay (transform.position + new Vector3(spriteWidth/2, spriteHeight/2,0), Vector2.up * 0.8f, Color.red , 2);
 		if (hit.collider != null) {
 			if (hit.collider.gameObject.CompareTag (tag)) {
 				result = result | 1;
 			}
 		}
 
-		hit = Physics2D.Raycast (transform.position + new Vector3(-spriteWidth/2, spriteHeight/2,0), Vector2.up, 0.4f,layerMask);
-		Debug.DrawRay (transform.position + new Vector3(-spriteWidth/2, spriteHeight/2,0), Vector2.up * 0.4f, Color.red , 2);
+		hit = Physics2D.Raycast (transform.position + new Vector3(-spriteWidth/2, spriteHeight/2,0), Vector2.up, 0.8f,layerMask);
+		Debug.DrawRay (transform.position + new Vector3(-spriteWidth/2, spriteHeight/2,0), Vector2.up * 0.8f, Color.red , 2);
 		if (hit.collider != null) {
 			if (hit.collider.gameObject.CompareTag (tag)) {
 				result = result | 1;
 			}
 		}
 
-		hit = Physics2D.Raycast (transform.position + new Vector3(spriteWidth/2, -spriteHeight/2,0), Vector2.down, 0.4f,layerMask);
-		Debug.DrawRay (transform.position + new Vector3(spriteWidth/2, -spriteHeight/2,0), Vector2.down * 0.4f, Color.red , 2);
+		hit = Physics2D.Raycast (transform.position + new Vector3(spriteWidth/2, -spriteHeight/2,0), Vector2.down, 0.8f,layerMask);
+		Debug.DrawRay (transform.position + new Vector3(spriteWidth/2, -spriteHeight/2,0), Vector2.down * 0.8f, Color.red , 2);
 		if (hit.collider != null) {
 			if (hit.collider.gameObject.CompareTag (tag)) {
 				result = result | 2;
 			}
 		}
 
-		hit = Physics2D.Raycast (transform.position + new Vector3(-spriteWidth/2, -spriteHeight/2,0), Vector2.down, 0.4f,layerMask);
-		Debug.DrawRay (transform.position + new Vector3(-spriteWidth/2, -spriteHeight/2,0), Vector2.down * 0.4f, Color.red , 2);
+		hit = Physics2D.Raycast (transform.position + new Vector3(-spriteWidth/2, -spriteHeight/2,0), Vector2.down, 0.8f,layerMask);
+		Debug.DrawRay (transform.position + new Vector3(-spriteWidth/2, -spriteHeight/2,0), Vector2.down * 0.8f, Color.red , 2);
 		if (hit.collider != null) {
 			//Debug.Log ("intoHitCollider");	
 			if (hit.collider.gameObject.CompareTag (tag)) {
@@ -249,32 +271,32 @@ public class PlayerControl : MonoBehaviour {
 			}
 		}
 
-		hit = Physics2D.Raycast (transform.position + new Vector3(-spriteWidth/2, -spriteHeight/2,0), Vector2.left, 0.4f,layerMask);
-		Debug.DrawRay (transform.position + new Vector3(-spriteWidth/2, -spriteHeight/2,0), Vector2.left * 0.4f, Color.red , 2);
+		hit = Physics2D.Raycast (transform.position + new Vector3(-spriteWidth/2, -spriteHeight/2,0), Vector2.left, 0.8f,layerMask);
+		Debug.DrawRay (transform.position + new Vector3(-spriteWidth/2, -spriteHeight/2,0), Vector2.left * 0.8f, Color.red , 2);
 		if (hit.collider != null) {
 			if (hit.collider.gameObject.CompareTag (tag)) {
 				result = result | 4;
 			}
 		}
 
-		hit = Physics2D.Raycast (transform.position + new Vector3(-spriteWidth/2, spriteHeight/2,0), Vector2.left, 0.4f,layerMask);
-		Debug.DrawRay (transform.position + new Vector3(-spriteWidth/2, spriteHeight/2,0), Vector2.left * 0.4f, Color.red , 2);
+		hit = Physics2D.Raycast (transform.position + new Vector3(-spriteWidth/2, spriteHeight/2,0), Vector2.left, 0.8f,layerMask);
+		Debug.DrawRay (transform.position + new Vector3(-spriteWidth/2, spriteHeight/2,0), Vector2.left * 0.8f, Color.red , 2);
 		if (hit.collider != null) {
 			if (hit.collider.gameObject.CompareTag (tag)) {
 				result = result | 4;
 			}
 		}
 			
-		hit = Physics2D.Raycast (transform.position + new Vector3(spriteWidth/2, spriteHeight/2,0), Vector2.right, 0.4f,layerMask);
-		Debug.DrawRay (transform.position + new Vector3(spriteWidth/2, spriteHeight/2,0), Vector2.right * 0.4f, Color.red , 2);
+		hit = Physics2D.Raycast (transform.position + new Vector3(spriteWidth/2, spriteHeight/2,0), Vector2.right, 0.8f,layerMask);
+		Debug.DrawRay (transform.position + new Vector3(spriteWidth/2, spriteHeight/2,0), Vector2.right * 0.8f, Color.red , 2);
 		if (hit.collider != null) {
 			if (hit.collider.gameObject.CompareTag (tag)) {
 				result = result | 8;
 			}
 		}
 
-		hit = Physics2D.Raycast (transform.position + new Vector3(spriteWidth/2, -spriteHeight/2,0), Vector2.right, 0.4f,layerMask);
-		Debug.DrawRay (transform.position + new Vector3(spriteWidth/2, -spriteHeight/2,0), Vector2.right * 0.4f, Color.red , 2);
+		hit = Physics2D.Raycast (transform.position + new Vector3(spriteWidth/2, -spriteHeight/2,0), Vector2.right, 0.8f,layerMask);
+		Debug.DrawRay (transform.position + new Vector3(spriteWidth/2, -spriteHeight/2,0), Vector2.right * 0.8f, Color.red , 2);
 		if (hit.collider != null) {
 			if (hit.collider.gameObject.CompareTag (tag)) {
 				result = result | 8;
@@ -287,4 +309,6 @@ public class PlayerControl : MonoBehaviour {
 	public void SetInputEnabled(bool setEnabled) {
 		isInputEnabled = setEnabled;
 	}
+
+
 }

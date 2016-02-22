@@ -15,6 +15,8 @@ public class FrameControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (frameImage == null)
+			return;
 		float x = frameImage.GetComponent<RectTransform> ().anchoredPosition.x;
 		//Debug.Log (x + " " + CurrentItemBagPosition);
 		x = Mathf.Lerp (x, CurrentItemBagPosition * 41f, 10f * Time.deltaTime);

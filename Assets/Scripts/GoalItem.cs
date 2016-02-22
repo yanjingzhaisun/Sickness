@@ -18,7 +18,8 @@ public class GoalItem : MonoBehaviour {
 	
 	}
 
-	void OnTriggerEnter2D(Collider2D c) {
+	void OnCollisionEnter2D(Collision2D c) {
+		Debug.Log ("Etnered 2d");
 		if (c.gameObject.CompareTag ("Player")) {
 			if (!isTouched) {
 				NextLevel.instance.theNextLevel = nextLevelName;
@@ -26,6 +27,7 @@ public class GoalItem : MonoBehaviour {
 				PlayerPrefs.SetFloat ("PlayerY", newScenePosition.y);
 				PlayerPrefs.SetFloat ("PlayerZ", GameObject.Find ("prefabBasicPlayer").transform.position.z);
 				NextLevel.instance.StartChangeLevel ();
+				GameObject.Find ("prefabBasicPlayer").GetComponent<PlayerControl> ().IsInputEnabled = false;
 			}
 			isTouched = true;
 		}

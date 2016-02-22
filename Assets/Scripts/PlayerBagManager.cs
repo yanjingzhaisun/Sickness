@@ -80,4 +80,16 @@ public class PlayerBagManager : MonoBehaviour {
 			return bagContent [bagPosition];
 		return null;
 	}
+
+	public void DataClear(){
+		bagContent = new List<Item> ();
+	}
+
+	public bool IsItemInBag(int itemId){
+		for (int i = 0; i < bagContent.Count; i++) {
+			if (bagContent [i].ID == itemId)
+				return true;
+		}
+		return false;
+	}
 }
